@@ -53,7 +53,7 @@ exports.create = (req, res) => {
 // Retrieves all students
 exports.retrieve_students = (req, res) => {
     const first_name = req.query.first_name;
-    // {first_name: "Sa"}
+    
     var condition = first_name ? { first_name: { [Op.like]: `%${first_name}` } } : null;
 
     Student.findAll({ where: condition })
@@ -84,6 +84,16 @@ exports.update = (req, res) => {
             status: "Error",
             status_code: 400,
             message: "Fill in the First Name"
+        });
+        return;
+    }
+
+    // Check if the ID is valid
+    if (!isValidID(id)) {
+        res.status(400).send({
+            status: "Error",
+            status_code: 400,
+            message: "Invalid ID format"
         });
         return;
     }
@@ -149,6 +159,17 @@ exports.update = (req, res) => {
             });
         });
 };
+
+// Function to validate ID format
+function isValidID(id) {
+    // Implement your ID validation logic here
+    // For example, check if it contains a mixture of numbers and letters
+    const regex = /^[0-9a-zA-Z]+$/;
+    return regex.test(id);
+}
+
+
+
 
 // Delete a Student by ID
 exports.delete = (req, res) => {
